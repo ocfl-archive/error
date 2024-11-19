@@ -3,20 +3,7 @@ Error management for archival workflows
 
 ### TOML & Zerolog
 
-`data/error.toml`
-```toml
-[[errors]]
-id = "TestError2"
-type = "unknown"
-default_weight = 50
-message = "Testing two for error"
-
-[[errors]]
-id = "TestError"
-type = "unknown"
-default_weight = 50
-message = "Testing for error"
-```
+Playground: https://go.dev/play/p/5AZUWzxEgVk
 
 ```go
 package main
@@ -30,7 +17,21 @@ import (
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
-	errs, err := archiveerror.LoadYAMLFile("data/errors.yaml")
+	tomlData := []byte(`
+[[errors]]
+id = "TestError2"
+type = "unknown"
+default_weight = 50
+message = "Testing two for error"
+
+[[errors]]
+id = "TestError"
+type = "unknown"
+default_weight = 50
+message = "Testing for error"
+`)
+
+	errs, err := archiveerror.LoadTOMLData(tomlData)
 	if err != nil {
 		panic(err)
 	}
