@@ -1,7 +1,7 @@
 package error
 
 var Errors = map[ID]*Error{
-	IDUnknownError: NewErrorStruct(IDUnknownError, UnknownErrorType, 0, "", "An unexpected error occurred."),
+	IDUnknownError: NewErrorStruct(IDUnknownError, UnknownErrorType, 100, "", "An unexpected error occurred."),
 }
 
 func NewError(id ID, additional string) *Error {
@@ -9,5 +9,5 @@ func NewError(id ID, additional string) *Error {
 	if !ok {
 		err = Errors[IDUnknownError]
 	}
-	return err.WithAdditional(additional)
+	return err.WithAdditional(additional, 2)
 }
