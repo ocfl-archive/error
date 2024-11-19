@@ -16,13 +16,13 @@ func NewErrorStruct(id ID, t Type, defaultWeight int64, source, message string) 
 }
 
 type Error struct {
-	ID            ID     `json:"id",toml:"id"`
-	Type          Type   `json:"type",toml:"type"`
-	DefaultWeight int64  `json:"default_weight",toml:"default_weight"`
-	SourceFile    string `json:"source_file",toml:"-"`
-	SourceFunc    string `json:"source_func",toml:"-"`
-	Message       string `json:"message",toml:"message"`
-	Additional    string `json:"additional",toml:"-"`
+	ID            ID     `json:"id" toml:"id" yaml:"id"`
+	Type          Type   `json:"type" toml:"type" yaml:"type"`
+	DefaultWeight int64  `json:"default_weight" toml:"default_weight" yaml:"default_weight"`
+	SourceFile    string `json:"source_file" toml:"-" yaml:"-"`
+	SourceFunc    string `json:"source_func" toml:"-" yaml:"-"`
+	Message       string `json:"message" toml:"message" yaml:"message"`
+	Additional    string `json:"additional" toml:"-" yaml:"-"`
 }
 
 func (e *Error) Error() string {

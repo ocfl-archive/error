@@ -1,6 +1,10 @@
 package error
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/BurntSushi/toml"
+	"gopkg.in/yaml.v3"
+)
 
 func NewFactory() *Factory {
 	return &Factory{
@@ -46,4 +50,26 @@ func (f *Factory) NewError(id ID, additional string) *Error {
 		err = f.errors[IDUnknownError]
 	}
 	return err.WithAdditional(additional, 2)
+}
+
+func (f *Factory) TOML() ([]byte, error) {
+	var errs []*Error
+	for _, err := range f.errors {
+		if err.ID == IDUnknownError {
+			continue
+		}
+		errs = append(errs, err)
+	}
+	return toml.Marshal(_tomlErrors{Errors: errs})
+}
+
+func (f *Factory) YAML() ([]byte, error) {
+	var errs []*Error
+	for _, err := range f.errors {
+		if err.ID == IDUnknownError {
+			continue
+		}
+		errs = append(errs, err)
+	}
+	return yaml.Marshal(errs)
 }

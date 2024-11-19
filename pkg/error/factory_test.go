@@ -55,4 +55,50 @@ func TestName(t *testing.T) {
 	if testErr.Additional != "additional" {
 		t.Errorf("testErr.Additional = %s, want 'additional'", testErr.Additional)
 	}
+
+	if err := factory.RegisterError("TestError2", TypeUnknownError, 50, "Testing two for error"); err != nil {
+		t.Errorf("factory.RegisterError() failed: %v", err)
+	}
+
+	toml, err := factory.TOML()
+	if err != nil {
+		t.Errorf("factory.TOML() failed: %v", err)
+	}
+	yaml, err := factory.YAML()
+	if err != nil {
+		t.Errorf("factory.YAML() failed: %v", err)
+	}
+	fmt.Println(string(toml))
+	fmt.Println(string(yaml))
+
+	factory2 := NewFactory()
+	errors2, err := LoadTOMLData(toml)
+	if err != nil {
+		t.Errorf("LoadTOMLData() failed: %v", err)
+	}
+	if err := factory2.RegisterErrors(errors2); err != nil {
+		t.Errorf("factory2.RegisterErrors() failed: %v", err)
+	}
+	toml2, err := factory2.TOML()
+	if err != nil {
+		t.Errorf("factory2.TOML() failed: %v", err)
+	}
+	if string(toml) != string(toml2) {
+		t.Errorf("toml != toml2")
+	}
+	factory3 := NewFactory()
+	errors3, err := LoadYAMLData(yaml)
+	if err != nil {
+		t.Errorf("LoadYAMLData() failed: %v", err)
+	}
+	if err := factory3.RegisterErrors(errors3); err != nil {
+		t.Errorf("factory3.RegisterErrors() failed: %v", err)
+	}
+	yaml3, err := factory3.YAML()
+	if err != nil {
+		t.Errorf("factory3.YAML() failed: %v", err)
+	}
+	if string(yaml) != string(yaml3) {
+		t.Errorf("yaml != yaml3")
+	}
 }
