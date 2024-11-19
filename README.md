@@ -3,6 +3,8 @@ Error management for archival workflows
 
 ### YAML
 
+Playground: https://go.dev/play/p/heFWPrPpYgv
+
 `data/errors.yaml`
 ```yaml
 - id: TestError
