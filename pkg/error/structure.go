@@ -16,13 +16,13 @@ func NewErrorStruct(id ID, t Type, defaultWeight int64, source, message string) 
 }
 
 type Error struct {
-	ID            ID     `json:"id"`
-	Type          Type   `json:"type"`
-	DefaultWeight int64  `json:"default_weight"`
-	SourceFile    string `json:"source_file"`
-	SourceFunc    string `json:"source_func"`
-	Message       string `json:"message"`
-	Additional    string `json:"additional"`
+	ID            ID     `json:"id",toml:"id"`
+	Type          Type   `json:"type",toml:"type"`
+	DefaultWeight int64  `json:"default_weight",toml:"default_weight"`
+	SourceFile    string `json:"source_file",toml:"-"`
+	SourceFunc    string `json:"source_func",toml:"-"`
+	Message       string `json:"message",toml:"message"`
+	Additional    string `json:"additional",toml:"-"`
 }
 
 func (e *Error) Error() string {
@@ -30,7 +30,7 @@ func (e *Error) Error() string {
 }
 
 func (e *Error) String() string {
-	return fmt.Sprintf("[%s] #%d (%s): %s - %s", e.Type, e.ID, e.SourceFile, e.Message, e.Additional)
+	return fmt.Sprintf("[%s] #%s (%s): %s - %s", e.Type, e.ID, e.SourceFile, e.Message, e.Additional)
 }
 
 func (e *Error) WithAdditional(additional string, skip int) *Error {

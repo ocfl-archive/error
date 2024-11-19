@@ -1,7 +1,7 @@
 package error
 
-type ID int64
+type ID string
 
 const (
-	IDUnknownError = iota
+	IDUnknownError = "IDUnknownError"
 )

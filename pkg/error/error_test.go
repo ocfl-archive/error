@@ -20,10 +20,10 @@ func TestError(t *testing.T) {
 		t.Errorf("error is nil")
 	}
 	if testError.ID != IDUnknownError {
-		t.Errorf("error.ID = %d, want %d", testError.ID, IDUnknownError)
+		t.Errorf("error.ID = %s, want %s", testError.ID, IDUnknownError)
 	}
-	if testError.Type != UnknownErrorType {
-		t.Errorf("error.Type = %s, want %s", testError.Type, UnknownErrorType)
+	if testError.Type != TypeUnknownError {
+		t.Errorf("error.Type = %s, want %s", testError.Type, TypeUnknownError)
 	}
 	if testError.DefaultWeight != 100 {
 		t.Errorf("error.DefaultWeight = %d, want 100", testError.DefaultWeight)
