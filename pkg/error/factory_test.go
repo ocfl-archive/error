@@ -40,8 +40,8 @@ func TestName(t *testing.T) {
 	if testErr.Type != TypeUnknownError {
 		t.Errorf("testErr.Type = %s, want %s", testErr.Type, TypeUnknownError)
 	}
-	if testErr.DefaultWeight != 50 {
-		t.Errorf("testErr.DefaultWeight = %d, want 50", testErr.DefaultWeight)
+	if testErr.Weight != 50 {
+		t.Errorf("testErr.Weight = %d, want 50", testErr.Weight)
 	}
 	if testErr.SourceFile != sourceFile {
 		t.Errorf("testErr.SourceFile = %s, want %s", testErr.SourceFile, sourceFile)

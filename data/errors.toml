@@ -1,11 +1,11 @@
 [[errors]]
 id = "TestError2"
 type = "unknown"
-default_weight = 50
+weight = 50
 message = "Testing two for error"
 
 [[errors]]
 id = "TestError"
 type = "unknown"
-default_weight = 50
+weight = 50
 message = "Testing for error"

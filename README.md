@@ -21,13 +21,13 @@ func main() {
 [[errors]]
 id = "TestError2"
 type = "unknown"
-default_weight = 50
+weight = 50
 message = "Testing two for error"
 
 [[errors]]
 id = "TestError"
 type = "unknown"
-default_weight = 50
+weight = 50
 message = "Testing for error"
 `)
 
@@ -57,7 +57,7 @@ Playground: https://go.dev/play/p/heFWPrPpYgv
 ```yaml
 - id: TestError
   type: unknown
-  default_weight: 50
+  weight: 50
   message: Testing for error
 - id: TestError2
   type: unknown
@@ -71,7 +71,6 @@ package main
 import (
 	"encoding/json"
 	archiveerror "github.com/ocfl-archive/error/pkg/error"
-	"os"
 )
 
 func main() {
