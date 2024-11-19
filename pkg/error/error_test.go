@@ -1,11 +1,21 @@
 package error
 
 import (
+	"fmt"
+	"runtime"
 	"testing"
 )
 
 func TestError(t *testing.T) {
 	testError := NewError(IDUnknownError, "additional")
+	pc, file, line, ok := runtime.Caller(0)
+	details := runtime.FuncForPC(pc)
+	if !ok {
+		t.Errorf("runtime.Caller(0) failed")
+	}
+	sourceFile := fmt.Sprintf("%s:%d", file, line-1)
+
+	sourceFunc := details.Name()
 	if testError == nil {
 		t.Errorf("error is nil")
 	}
@@ -18,11 +28,11 @@ func TestError(t *testing.T) {
 	if testError.DefaultWeight != 100 {
 		t.Errorf("error.DefaultWeight = %d, want 100", testError.DefaultWeight)
 	}
-	if testError.SourceFile != "C:/daten/go/dev/error/pkg/error/error_test.go:9" {
-		t.Errorf("error.SourceFile = %s, want 'C:/daten/go/dev/error/pkg/error/error_test.go:9'", testError.SourceFile)
+	if testError.SourceFile != sourceFile {
+		t.Errorf("error.SourceFile = %s, want %s", testError.SourceFile, sourceFile)
 	}
-	if testError.SourceFunc != "github.com/ocfl-archive/error/pkg/error.TestError" {
-		t.Errorf("error.SourceFunc = %s, want 'github.com/ocfl-archive/error/pkg/error.TestError'", testError.SourceFunc)
+	if testError.SourceFunc != sourceFunc {
+		t.Errorf("error.SourceFunc = %s, want %s", testError.SourceFunc, sourceFunc)
 	}
 	if testError.Message != "An unexpected error occurred." {
 		t.Errorf("error.Message = %s, want 'An unexpected error occurred.'", testError.Message)
