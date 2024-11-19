@@ -3,6 +3,18 @@ Error management for archival workflows
 
 ### YAML
 
+`data/errors.yaml`
+```yaml
+- id: TestError
+  type: unknown
+  default_weight: 50
+  message: Testing for error
+- id: TestError2
+  type: unknown
+  default_weight: 50
+  message: Testing two for error
+``` 
+
 ```go
 package main
 
@@ -35,6 +47,21 @@ func main() {
 ```
 
 ### TOML
+
+`data/error.toml`
+```toml
+[[errors]]
+id = "TestError2"
+type = "unknown"
+default_weight = 50
+message = "Testing two for error"
+
+[[errors]]
+id = "TestError"
+type = "unknown"
+default_weight = 50
+message = "Testing for error"
+```
 
 ```go
 package main
