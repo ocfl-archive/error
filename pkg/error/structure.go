@@ -55,8 +55,8 @@ type Error struct {
 	SourceFile string     `json:"source_file" toml:"-" yaml:"-"`
 	SourceFunc string     `json:"source_func" toml:"-" yaml:"-"`
 	Message    string     `json:"message" toml:"message" yaml:"message"`
-	Additional string     `json:"additional" toml:"-" yaml:"-"`
-	ErrorData  *ErrorData `json:"error_data" toml:"-" yaml:"-"`
+	Additional string     `json:"additional,omitempty" toml:"-" yaml:"-"`
+	ErrorData  *ErrorData `json:"error_data,omitempty" toml:"-" yaml:"-"`
 }
 
 func (e *Error) Error() string {
@@ -72,7 +72,7 @@ func (e *Error) WithAdditional(additional string, skip int, err error) *Error {
 		skip = 1
 	}
 	var funcName string
-	var errorData = &ErrorData{}
+	var errorData *ErrorData
 	pc, file, line, ok := runtime.Caller(skip)
 	details := runtime.FuncForPC(pc)
 	if !ok {
@@ -86,8 +86,10 @@ func (e *Error) WithAdditional(additional string, skip int, err error) *Error {
 	}
 	if err != nil {
 		stack := getErrorStacktrace(err)
-		errorData.Stack = fmt.Sprintf("%+v", stack)
-		errorData.Message = err.Error()
+		errorData = &ErrorData{
+			Message: err.Error(),
+			Stack:   fmt.Sprintf("%+v", stack),
+		}
 	}
 	source := fmt.Sprintf("%s:%d", file, line)
 	return &Error{
