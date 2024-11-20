@@ -19,7 +19,7 @@ func TestName(t *testing.T) {
 	if len(factory.errors) != 1 {
 		t.Errorf("len(factory.errors) = %d, want 1", len(factory.errors))
 	}
-	if err := factory.RegisterError("TestError", TypeUnknownError, 50, "Testing for error"); err != nil {
+	if err := factory.RegisterError("Test", TypeUnknownError, 50, "Testing for error"); err != nil {
 		t.Errorf("factory.RegisterError() failed: %v", err)
 	}
 	if len(factory.errors) != 2 {
@@ -28,18 +28,18 @@ func TestName(t *testing.T) {
 	if err := factory.RegisterError(IDUnknownError, TypeUnknownError, 50, "Testing for error"); err == nil {
 		t.Errorf("factory.RegisterError() should have failed")
 	}
-	err := errors.New("TestError")
+	err := errors.New("Test")
 	err = errors.Wrap(err, "additional")
 
-	testErr := factory.NewError("TestError", "additional", err)
+	testErr := factory.NewError("Test", "additional", err)
 	pc, file, line, ok := runtime.Caller(0)
 	details := runtime.FuncForPC(pc)
 	if !ok {
 		t.Errorf("runtime.Caller(0) failed")
 	}
 	sourceFile := fmt.Sprintf("%s:%d", file, line-1)
-	if testErr.ID != "TestError" {
-		t.Errorf("testErr.ID = %s, want TestError", testErr.ID)
+	if testErr.ID != "Test" {
+		t.Errorf("testErr.ID = %s, want Test", testErr.ID)
 	}
 	if testErr.Type != TypeUnknownError {
 		t.Errorf("testErr.Type = %s, want %s", testErr.Type, TypeUnknownError)
@@ -60,7 +60,7 @@ func TestName(t *testing.T) {
 		t.Errorf("testErr.Additional = %s, want 'additional'", testErr.Additional)
 	}
 
-	if err := factory.RegisterError("TestError2", TypeUnknownError, 50, "Testing two for error"); err != nil {
+	if err := factory.RegisterError("Test2", TypeUnknownError, 50, "Testing two for error"); err != nil {
 		t.Errorf("factory.RegisterError() failed: %v", err)
 	}
 
@@ -105,4 +105,5 @@ func TestName(t *testing.T) {
 	if string(yaml) != string(yaml3) {
 		t.Errorf("yaml != yaml3")
 	}
+	fmt.Println(factory3.ExportGOConstants())
 }

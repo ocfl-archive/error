@@ -1,8 +1,8 @@
-- id: TestError
+- id: Error
   type: unknown
   weight: 50
   message: Testing for error
-- id: TestError2
+- id: Error2
   type: unknown
   weight: 50
   message: Testing two for error

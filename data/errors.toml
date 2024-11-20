@@ -1,11 +1,11 @@
 [[errors]]
-id = "TestError2"
+id = "Test"
 type = "unknown"
 weight = 50
 message = "Testing two for error"
 
 [[errors]]
-id = "TestError"
+id = "Test"
 type = "unknown"
 weight = 50
 message = "Testing for error"

@@ -22,6 +22,14 @@ type Factory struct {
 	errors map[ID]*Error
 }
 
+func (f *Factory) ExportGOConstants() string {
+	var result = "const (\n"
+	for _, err := range f.errors {
+		result += fmt.Sprintf(`ERROR%s = "%s"`+"\n", err.ID, err.ID)
+	}
+	return result + ")\n"
+}
+
 func (f *Factory) RegisterError(id ID, t Type, defaultWeight int64, message string) error {
 	if _, ok := f.errors[id]; ok {
 		return fmt.Errorf("error with id %s already exists", id)
