@@ -44,12 +44,13 @@ func (f *Factory) RegisterErrors(errors []*Error) error {
 	return nil
 }
 
-func (f *Factory) NewError(id ID, additional string) *Error {
-	err, ok := f.errors[id]
+func (f *Factory) NewError(id ID, additional string, err error) *Error {
+	archiveErr, ok := f.errors[id]
 	if !ok {
-		err = f.errors[IDUnknownError]
+		archiveErr = f.errors[IDUnknownError]
+		additional = string(id) + ": " + additional
 	}
-	return err.WithAdditional(additional, 2)
+	return archiveErr.WithAdditional(additional, 2, err)
 }
 
 func (f *Factory) TOML() ([]byte, error) {

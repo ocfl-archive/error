@@ -1,9 +1,36 @@
 package error
 
 import (
+	"emperror.dev/emperror"
+	"emperror.dev/errors"
 	"fmt"
 	"runtime"
 )
+
+func getErrorStacktrace(err error) errors.StackTrace {
+	type stackTracer interface {
+		StackTrace() errors.StackTrace
+	}
+
+	var stack errors.StackTrace
+
+	errors.UnwrapEach(err, func(err error) bool {
+		e := emperror.ExposeStackTrace(err)
+		st, ok := e.(stackTracer)
+		if !ok {
+			return true
+		}
+
+		stack = st.StackTrace()
+		return true
+	})
+
+	if len(stack) > 2 {
+		stack = stack[:len(stack)-2]
+	}
+	return stack
+	// fmt.Printf("%+v", st[0:2]) // top two frames
+}
 
 func NewErrorStruct(id ID, t Type, weight int64, source, message string) *Error {
 	return &Error{
@@ -12,17 +39,24 @@ func NewErrorStruct(id ID, t Type, weight int64, source, message string) *Error 
 		Weight:     weight,
 		SourceFile: source,
 		Message:    message,
+		ErrorData:  &ErrorData{},
 	}
 }
 
+type ErrorData struct {
+	Message string `json:"message" toml:"message" yaml:"message"`
+	Stack   string `json:"stack" toml:"stack" yaml:"stack"`
+}
+
 type Error struct {
-	ID         ID     `json:"id" toml:"id" yaml:"id"`
-	Type       Type   `json:"type" toml:"type" yaml:"type"`
-	Weight     int64  `json:"weight" toml:"weight" yaml:"weight"`
-	SourceFile string `json:"source_file" toml:"-" yaml:"-"`
-	SourceFunc string `json:"source_func" toml:"-" yaml:"-"`
-	Message    string `json:"message" toml:"message" yaml:"message"`
-	Additional string `json:"additional" toml:"-" yaml:"-"`
+	ID         ID         `json:"id" toml:"id" yaml:"id"`
+	Type       Type       `json:"type" toml:"type" yaml:"type"`
+	Weight     int64      `json:"weight" toml:"weight" yaml:"weight"`
+	SourceFile string     `json:"source_file" toml:"-" yaml:"-"`
+	SourceFunc string     `json:"source_func" toml:"-" yaml:"-"`
+	Message    string     `json:"message" toml:"message" yaml:"message"`
+	Additional string     `json:"additional" toml:"-" yaml:"-"`
+	ErrorData  *ErrorData `json:"error_data" toml:"-" yaml:"-"`
 }
 
 func (e *Error) Error() string {
@@ -33,19 +67,27 @@ func (e *Error) String() string {
 	return fmt.Sprintf("[%s] #%s (%s): %s - %s", e.Type, e.ID, e.SourceFile, e.Message, e.Additional)
 }
 
-func (e *Error) WithAdditional(additional string, skip int) *Error {
-	var funcName string
+func (e *Error) WithAdditional(additional string, skip int, err error) *Error {
 	if skip <= 0 {
 		skip = 1
 	}
+	var funcName string
+	var errorData = &ErrorData{}
 	pc, file, line, ok := runtime.Caller(skip)
 	details := runtime.FuncForPC(pc)
 	if !ok {
 		file = "???"
 		line = 0
 		funcName = "???"
-	} else if details != nil {
-		funcName = details.Name()
+	} else {
+		if details != nil {
+			funcName = details.Name()
+		}
+	}
+	if err != nil {
+		stack := getErrorStacktrace(err)
+		errorData.Stack = fmt.Sprintf("%+v", stack)
+		errorData.Message = err.Error()
 	}
 	source := fmt.Sprintf("%s:%d", file, line)
 	return &Error{
@@ -56,6 +98,7 @@ func (e *Error) WithAdditional(additional string, skip int) *Error {
 		SourceFunc: funcName,
 		Message:    e.Message,
 		Additional: additional,
+		ErrorData:  errorData,
 	}
 }
 

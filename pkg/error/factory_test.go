@@ -1,6 +1,7 @@
 package error
 
 import (
+	"emperror.dev/errors"
 	"fmt"
 	"runtime"
 	"testing"
@@ -27,7 +28,10 @@ func TestName(t *testing.T) {
 	if err := factory.RegisterError(IDUnknownError, TypeUnknownError, 50, "Testing for error"); err == nil {
 		t.Errorf("factory.RegisterError() should have failed")
 	}
-	testErr := factory.NewError("TestError", "additional")
+	err := errors.New("TestError")
+	err = errors.Wrap(err, "additional")
+
+	testErr := factory.NewError("TestError", "additional", err)
 	pc, file, line, ok := runtime.Caller(0)
 	details := runtime.FuncForPC(pc)
 	if !ok {

@@ -1,13 +1,16 @@
 package error
 
 import (
+	"emperror.dev/errors"
 	"fmt"
 	"runtime"
 	"testing"
 )
 
 func TestError(t *testing.T) {
-	testError := NewError(IDUnknownError, "additional")
+	var err = errors.New("test error")
+	err = errors.Wrap(err, "wrap test error")
+	testError := NewError(IDUnknownError, "additional", err)
 	pc, file, line, ok := runtime.Caller(0)
 	details := runtime.FuncForPC(pc)
 	if !ok {
@@ -40,4 +43,5 @@ func TestError(t *testing.T) {
 	if testError.Additional != "additional" {
 		t.Errorf("error.Additional = %s, want 'additional'", testError.Additional)
 	}
+
 }

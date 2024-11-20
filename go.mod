@@ -3,6 +3,7 @@ module github.com/ocfl-archive/error
 go 1.23.3
 
 require (
+	emperror.dev/emperror v0.33.0
 	emperror.dev/errors v0.8.1
 	github.com/BurntSushi/toml v1.4.0
 	gopkg.in/yaml.v3 v3.0.1
