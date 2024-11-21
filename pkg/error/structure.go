@@ -8,6 +8,10 @@ import (
 	"emperror.dev/errors"
 )
 
+const runtimeSkipInvalid = 0
+const runtimeSkipDefault = 1
+const runtimeSkipModule = 2
+
 func getErrorStacktrace(err error) errors.StackTrace {
 	type stackTracer interface {
 		StackTrace() errors.StackTrace
@@ -69,8 +73,8 @@ func (e *Error) String() string {
 }
 
 func (e *Error) WithAdditional(additional string, skip int, err error) *Error {
-	if skip <= 0 {
-		skip = 1
+	if skip <= runtimeSkipInvalid {
+		skip = runtimeSkipModule
 	}
 	var funcName string
 	var errorData *ErrorData

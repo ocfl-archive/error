@@ -78,7 +78,7 @@ func (f *Factory) NewError(id ID, additional string, err error) *Error {
 		archiveErr = f.errors[IDUnknownError]
 		additional = string(id) + ": " + additional
 	}
-	return archiveErr.WithAdditional(additional, 2, err)
+	return archiveErr.WithAdditional(additional, runtimeSkipModule, err)
 }
 
 // TOML will return a byte array to the caller containing all
