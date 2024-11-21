@@ -7,7 +7,7 @@ help:
 
 # Run go linting
 linting:
- - goimports -w ./...
+ - goimports -w .
  - go fmt ./...
  - go vet ./...
  - staticcheck ./...
@@ -18,9 +18,18 @@ all-checks:
 
 # Setup linting
 setup:
+  go install golang.org/x/tools/cmd/godoc@latest
   go install golang.org/x/tools/cmd/goimports@latest
   go install honnef.co/go/tools/cmd/staticcheck@latest
 
 # Fix imports
 fix-imports:
   goimports -w .
+
+# Run tests
+test:
+  go test ./...
+
+# Docs
+docs:
+  godoc -http 0.0.0.0:8000
