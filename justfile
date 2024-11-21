@@ -7,10 +7,10 @@ help:
 
 # Run go linting
 linting:
- goimports -w .
- go fmt .
- - go vet .
- - staticcheck .
+ - goimports -w ./...
+ - go fmt ./...
+ - go vet ./...
+ - staticcheck ./...
 
 # Run pre-commit
 all-checks:
