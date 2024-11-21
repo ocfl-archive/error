@@ -1,11 +1,12 @@
 package error
 
 import (
-	"emperror.dev/errors"
-	"github.com/BurntSushi/toml"
 	"io"
 	"io/fs"
 	"os"
+
+	"emperror.dev/errors"
+	"github.com/BurntSushi/toml"
 )
 
 type _tomlErrors struct {

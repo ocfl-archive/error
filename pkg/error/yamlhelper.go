@@ -1,12 +1,13 @@
 package error
 
 import (
-	"emperror.dev/errors"
-	"gopkg.in/yaml.v3"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"emperror.dev/errors"
+	"gopkg.in/yaml.v3"
 )
 
 func LoadYAMLData(data []byte) ([]*Error, error) {

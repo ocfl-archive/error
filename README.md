@@ -6,21 +6,23 @@ Error management for archival workflows
 
 ### TOML & Zerolog
 
-Playground: https://go.dev/play/p/5AZUWzxEgVk
+Playground: [example using toml][example-1].
+
+[example-1]: https://go.dev/play/p/5AZUWzxEgVk
 
 ```go
 package main
 
 import (
-	archiveerror "github.com/ocfl-archive/error/pkg/error"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+    archiveerror "github.com/ocfl-archive/error/pkg/error"
+    "github.com/rs/zerolog"
+    "github.com/rs/zerolog/log"
 )
 
 func main() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+    zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
-	tomlData := []byte(`
+    tomlData := []byte(`
 [[errors]]
 id = "TestError2"
 type = "unknown"
@@ -34,27 +36,29 @@ weight = 50
 message = "Testing for error"
 `)
 
-	errs, err := archiveerror.LoadTOMLData(tomlData)
-	if err != nil {
-		panic(err)
-	}
-	errorFactory := archiveerror.NewFactory()
-	if err := errorFactory.RegisterErrors(errs); err != nil {
-		panic(err)
-	}
+    errs, err := archiveerror.LoadTOMLData(tomlData)
+    if err != nil {
+        panic(err)
+    }
+    errorFactory := archiveerror.NewFactory()
+    if err := errorFactory.RegisterErrors(errs); err != nil {
+        panic(err)
+    }
 
-	archiveError := errorFactory.NewError("TestError2", "additional data")
-	if archiveError == nil {
-		panic("error is nil")
-	}
+    archiveError := errorFactory.NewError("TestError2", "additional data")
+    if archiveError == nil {
+        panic("error is nil")
+    }
 
-	log.Error().Any("archive", archiveError).Msg("An error occurred")
+    log.Error().Any("archive", archiveError).Msg("An error occurred")
 }
 ```
 
 ### YAML
 
-Playground: https://go.dev/play/p/heFWPrPpYgv
+Playground: [example using YAML][example-2].
+
+[example-2]: https://go.dev/play/p/heFWPrPpYgv
 
 `data/errors.yaml`
 
@@ -73,29 +77,29 @@ Playground: https://go.dev/play/p/heFWPrPpYgv
 package main
 
 import (
-	"encoding/json"
-	archiveerror "github.com/ocfl-archive/error/pkg/error"
+    "encoding/json"
+    archiveerror "github.com/ocfl-archive/error/pkg/error"
 )
 
 func main() {
-	errs, err := archiveerror.LoadYAMLFile("data/errors.yaml")
-	if err != nil {
-		panic(err)
-	}
-	errorFactory := archiveerror.NewFactory()
-	if err := errorFactory.RegisterErrors(errs); err != nil {
-		panic(err)
-	}
+    errs, err := archiveerror.LoadYAMLFile("data/errors.yaml")
+    if err != nil {
+        panic(err)
+    }
+    errorFactory := archiveerror.NewFactory()
+    if err := errorFactory.RegisterErrors(errs); err != nil {
+        panic(err)
+    }
 
-	archiveError := errorFactory.NewError("TestError2", "additional data")
-	if archiveError == nil {
-		panic("error is nil")
-	}
-	jsonBytes, err := json.MarshalIndent(archiveError, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-	println(string(jsonBytes))
+    archiveError := errorFactory.NewError("TestError2", "additional data")
+    if archiveError == nil {
+        panic("error is nil")
+    }
+    jsonBytes, err := json.MarshalIndent(archiveError, "", "  ")
+    if err != nil {
+        panic(err)
+    }
+    println(string(jsonBytes))
 }
 ```
 

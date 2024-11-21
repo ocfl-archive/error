@@ -1,10 +1,11 @@
 package error
 
 import (
-	"emperror.dev/errors"
 	"fmt"
 	"runtime"
 	"testing"
+
+	"emperror.dev/errors"
 )
 
 func TestError(t *testing.T) {

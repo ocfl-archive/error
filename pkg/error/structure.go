@@ -1,10 +1,11 @@
 package error
 
 import (
-	"emperror.dev/emperror"
-	"emperror.dev/errors"
 	"fmt"
 	"runtime"
+
+	"emperror.dev/emperror"
+	"emperror.dev/errors"
 )
 
 func getErrorStacktrace(err error) errors.StackTrace {
