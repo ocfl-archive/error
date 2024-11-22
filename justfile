@@ -30,6 +30,10 @@ fix-imports:
 test:
   go test ./...
 
+# Run tests without cache
+test-nocache:
+  go test -count=1 ./...
+
 # Docs
 docs:
   godoc -http 0.0.0.0:8000
