@@ -2,13 +2,29 @@ package error
 
 import (
 	"fmt"
+	"reflect"
 	"runtime"
 	"testing"
 
 	"emperror.dev/errors"
 )
 
-func TestName(t *testing.T) {
+// Compare slices where the slice count is two.
+func compareSlices(slice1 []*Error, slice2 []*Error) bool {
+	for _, slice1value := range slice1 {
+		if !reflect.DeepEqual(slice1value, slice2[0]) &&
+			!reflect.DeepEqual(slice1value, slice2[1]) {
+			fmt.Println("argh!")
+			return false
+		}
+	}
+	return true
+}
+
+// TesFactoryInitAndRoundTrip ensures that data consistency is protected
+// through different cycles of initializing the factory and roundtrip
+// via export.
+func TesFactoryInitAndRoundTrip(t *testing.T) {
 
 	factory := NewFactory()
 	if factory == nil {
@@ -38,6 +54,7 @@ func TestName(t *testing.T) {
 	if !ok {
 		t.Errorf("runtime.Caller(0) failed")
 	}
+
 	sourceFile := fmt.Sprintf("%s:%d", file, line-1)
 	if testErr.ID != "Test" {
 		t.Errorf("testErr.ID = %s, want Test", testErr.ID)
@@ -65,46 +82,74 @@ func TestName(t *testing.T) {
 		t.Errorf("factory.RegisterError() failed: %v", err)
 	}
 
-	toml, err := factory.TOML()
+	// Roundtrip Factory data to TOML and back.
+
+	// Export to TOML from the existing factory.
+	toml1, err := factory.TOML()
 	if err != nil {
 		t.Errorf("factory.TOML() failed: %v", err)
 	}
-	yaml, err := factory.YAML()
-	if err != nil {
-		t.Errorf("factory.YAML() failed: %v", err)
-	}
-	fmt.Println(string(toml))
-	fmt.Println(string(yaml))
 
+	// Create a new factory and create errors slice.
 	factory2 := NewFactory()
-	errors2, err := LoadTOMLData(toml)
+	errors2, err := LoadTOMLData(toml1)
 	if err != nil {
 		t.Errorf("LoadTOMLData() failed: %v", err)
 	}
+	// Register errors with the factory.
 	if err := factory2.RegisterErrors(errors2); err != nil {
 		t.Errorf("factory2.RegisterErrors() failed: %v", err)
 	}
+
+	// Export to toml from our second factory.
 	toml2, err := factory2.TOML()
 	if err != nil {
 		t.Errorf("factory2.TOML() failed: %v", err)
 	}
-	if string(toml) != string(toml2) {
-		t.Errorf("toml != toml2")
+
+	// Load the exported strings into new TOML structures to test for
+	// equivalence. TOML doesn't have guraanteed order and so needs to
+	// be compared structurally.
+	toml1Compare, _ := LoadTOMLData(toml1)
+	toml2Compare, _ := LoadTOMLData(toml2)
+
+	if !compareSlices(toml1Compare, toml2Compare) {
+		t.Errorf("toml1 != toml2:\ntoml1:\n%s,\ntoml2:\n%s)", toml1, toml2)
 	}
+
+	// Roundtrip Factory data to TOML and back.
+
+	// Export to TOML from the existing factory.
+	yaml1, err := factory.YAML()
+	if err != nil {
+		t.Errorf("factory.YAML() failed: %v", err)
+	}
+
+	// Create a new factory and create errors slice.
 	factory3 := NewFactory()
-	errors3, err := LoadYAMLData(yaml)
+	errors3, err := LoadYAMLData(yaml1)
 	if err != nil {
 		t.Errorf("LoadYAMLData() failed: %v", err)
 	}
+
+	// Register errors with the factory.
 	if err := factory3.RegisterErrors(errors3); err != nil {
 		t.Errorf("factory3.RegisterErrors() failed: %v", err)
 	}
-	yaml3, err := factory3.YAML()
+
+	// Export to toml from our second factory.
+	yaml2, err := factory3.YAML()
 	if err != nil {
 		t.Errorf("factory3.YAML() failed: %v", err)
 	}
-	if string(yaml) != string(yaml3) {
-		t.Errorf("yaml != yaml3")
+
+	// Load the exported strings into new TOML structures to test for
+	// equivalence. TOML doesn't have guraanteed order and so needs to
+	// be compared structurally.
+	yaml1Compare, _ := LoadYAMLData(yaml1)
+	yaml2Compare, _ := LoadYAMLData(yaml2)
+
+	if !compareSlices(yaml1Compare, yaml2Compare) {
+		t.Errorf("yaml != yaml3:\nyaml1:\n%s,\nyaml2:\n%s)", yaml1, yaml2)
 	}
-	fmt.Println(factory3.ExportGOConstants())
 }
