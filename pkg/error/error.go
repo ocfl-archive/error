@@ -4,11 +4,21 @@
 
 package error
 
+// DefaultWeight provides a default for weighting errors.
 const DefaultWeight = 100
+
+// DefaultMessage is provided for errors unknown to the factory.
 const DefaultMessage = "An unexpected error occurred."
 
+// Errors map persists the errors in the factory.
 var Errors = map[ID]*Error{
-	IDUnknownError: NewErrorStruct(IDUnknownError, TypeUnknownError, 100, "", "An unexpected error occurred."),
+	IDUnknownError: NewErrorStruct(
+		IDUnknownError,
+		TypeUnknownError,
+		DefaultWeight,
+		"",
+		"An unexpected error occurred.",
+	),
 }
 
 // NewError returns a baseline error to the caller that can be

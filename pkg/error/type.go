@@ -1,5 +1,6 @@
 package error
 
+// Type describes a constant for a known type of error.
 type Type string
 
 const (

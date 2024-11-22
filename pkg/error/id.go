@@ -1,5 +1,6 @@
 package error
 
+// ID describes a constant for a known type of error.
 type ID string
 
 const (
