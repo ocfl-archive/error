@@ -1,7 +1,3 @@
-// Package error provides an implementation of an errors factory for
-// consistent structuring of errors across multiple libraries that
-// invoke logging using this package.
-
 package error
 
 import (
@@ -70,7 +66,7 @@ func (f *Factory) RegisterErrors(errors []*Error) error {
 
 // NewError retrieves an error from the factory. If the error is known
 // its additional context appended and returned to the caller. If the
-// erorr is unknown it is returned with additional context appended and
+// error is unknown it is returned with additional context appended and
 // ID unknown.
 func (f *Factory) NewError(id ID, additional string, err error) *Error {
 	archiveErr, ok := f.errors[id]
