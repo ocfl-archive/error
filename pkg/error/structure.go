@@ -56,8 +56,8 @@ func NewErrorStruct(id ID, t Type, weight int64, source, message string) *Error 
 
 // Error data provides a structured way to wrap additional error data.
 type ErrorData struct {
-	Message string `json:"message" toml:"message" yaml:"message"`
-	Stack   string `json:"stack" toml:"stack" yaml:"stack"`
+	Message string `json:"message,omitempty" toml:"message,omitempty" yaml:"message,omitempty"`
+	Stack   string `json:"stack,omitempty" toml:"stack,omitempty" yaml:"stack,omitempty"`
 }
 
 // Error is the underlying type to be initialized in the error factory
