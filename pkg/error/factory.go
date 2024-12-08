@@ -9,8 +9,9 @@ import (
 
 // NewFactory Initializes a new error factory with a single
 // IDUnknownError.
-func NewFactory() *Factory {
+func NewFactory(logName string) *Factory {
 	return &Factory{
+		logName: logName,
 		errors: map[ID]*Error{IDUnknownError: &Error{
 			ID:      IDUnknownError,
 			Type:    TypeUnknownError,
@@ -24,7 +25,8 @@ func NewFactory() *Factory {
 // Factory object for recording all structured error objects for an
 // application using this module.
 type Factory struct {
-	errors map[ID]*Error
+	errors  map[ID]*Error
+	logName string
 }
 
 // ExportGOConstants will export constants registered with this module.
@@ -75,6 +77,10 @@ func (f *Factory) NewError(id ID, additional string, err error) *Error {
 		additional = string(id) + ": " + additional
 	}
 	return archiveErr.WithAdditional(additional, runtimeSkipModule, err)
+}
+
+func (f *Factory) LogError(id ID, additional string, err error) (string, *Error) {
+	return f.logName, f.NewError(id, additional, err)
 }
 
 // TOML will return a byte array to the caller containing all

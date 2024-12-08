@@ -1,12 +1,14 @@
 package error
 
 import (
+	"emperror.dev/errors"
 	"fmt"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"os"
 	"reflect"
 	"runtime"
 	"testing"
-
-	"emperror.dev/errors"
 )
 
 // Compare slices where the slice count is two.
@@ -21,12 +23,22 @@ func compareSlices(slice1 []*Error, slice2 []*Error) bool {
 	return true
 }
 
-// TesFactoryInitAndRoundTrip ensures that data consistency is protected
+func TestLogging(t *testing.T) {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+	factory := NewFactory("OCFLError")
+	if err := factory.RegisterError("Test", TypeUnknownError, 50, "Testing for error"); err != nil {
+		t.Errorf("factory.RegisterError() failed: %v", err)
+	}
+	log.Info().Any(factory.LogError("Test", "additional", errors.New("Testing 123"))).Msg("hello world")
+}
+
+// TestFactoryInitAndRoundTrip ensures that data consistency is protected
 // through different cycles of initializing the factory and roundtrip
 // via export.
-func TesFactoryInitAndRoundTrip(t *testing.T) {
+func TestFactoryInitAndRoundTrip(t *testing.T) {
 
-	factory := NewFactory()
+	factory := NewFactory("OCFLError")
 	if factory == nil {
 		t.Errorf("factory is nil")
 	}
@@ -91,7 +103,7 @@ func TesFactoryInitAndRoundTrip(t *testing.T) {
 	}
 
 	// Create a new factory and create errors slice.
-	factory2 := NewFactory()
+	factory2 := NewFactory("OCFLError")
 	errors2, err := LoadTOMLData(toml1)
 	if err != nil {
 		t.Errorf("LoadTOMLData() failed: %v", err)
@@ -126,7 +138,7 @@ func TesFactoryInitAndRoundTrip(t *testing.T) {
 	}
 
 	// Create a new factory and create errors slice.
-	factory3 := NewFactory()
+	factory3 := NewFactory("OCFLError")
 	errors3, err := LoadYAMLData(yaml1)
 	if err != nil {
 		t.Errorf("LoadYAMLData() failed: %v", err)

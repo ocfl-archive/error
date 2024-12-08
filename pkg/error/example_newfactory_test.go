@@ -30,7 +30,7 @@ message = "cannot determine content type for archival object"
 	if err != nil {
 		panic(err)
 	}
-	errorFactory := error.NewFactory()
+	errorFactory := error.NewFactory("OCFLError")
 	if err := errorFactory.RegisterErrors(errs); err != nil {
 		panic(err)
 	}
@@ -65,7 +65,7 @@ func ExampleNewFactory_yaml() {
 		panic(err)
 	}
 
-	errorFactory := error.NewFactory()
+	errorFactory := error.NewFactory("OCFLError")
 	if err := errorFactory.RegisterErrors(errs); err != nil {
 		panic(err)
 	}
