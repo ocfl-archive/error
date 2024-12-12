@@ -13,6 +13,7 @@ import (
 const runtimeSkipInvalid = 0
 const runtimeSkipDefault = 1
 const runtimeSkipModule = 2
+const runtimeSkipExternalCall = 3
 
 // getErrorStacktrace is an internal function used to return the
 // stack trace to the caller.
@@ -56,8 +57,8 @@ func NewErrorStruct(id ID, t Type, weight int64, source, message string) *Error 
 
 // Error data provides a structured way to wrap additional error data.
 type ErrorData struct {
-	Message string `json:"message" toml:"message" yaml:"message"`
-	Stack   string `json:"stack" toml:"stack" yaml:"stack"`
+	Message string `json:"message,omitempty" toml:"message,omitempty" yaml:"message,omitempty"`
+	Stack   string `json:"stack,omitempty" toml:"stack,omitempty" yaml:"stack,omitempty"`
 }
 
 // Error is the underlying type to be initialized in the error factory

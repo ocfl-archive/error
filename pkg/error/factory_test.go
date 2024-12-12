@@ -1,14 +1,15 @@
 package error
 
 import (
-	"emperror.dev/errors"
 	"fmt"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"os"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"emperror.dev/errors"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // Compare slices where the slice count is two.
