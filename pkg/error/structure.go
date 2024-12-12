@@ -13,6 +13,7 @@ import (
 const runtimeSkipInvalid = 0
 const runtimeSkipDefault = 1
 const runtimeSkipModule = 2
+const runtimeSkipExternalCall = 3
 
 // getErrorStacktrace is an internal function used to return the
 // stack trace to the caller.

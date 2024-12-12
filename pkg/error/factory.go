@@ -66,21 +66,32 @@ func (f *Factory) RegisterErrors(errors []*Error) error {
 	return nil
 }
 
-// NewError retrieves an error from the factory. If the error is known
-// its additional context appended and returned to the caller. If the
-// error is unknown it is returned with additional context appended and
-// ID unknown.
-func (f *Factory) NewError(id ID, additional string, err error) *Error {
+// newError is an internal function allowing LogError to wrap NewError
+// and skip the correct stackframe.
+func (f *Factory) newError(id ID, additional string, err error, logExternal bool) *Error {
 	archiveErr, ok := f.errors[id]
 	if !ok {
 		archiveErr = f.errors[IDUnknownError]
 		additional = string(id) + ": " + additional
 	}
-	return archiveErr.WithAdditional(additional, runtimeSkipModule, err)
+	if !logExternal {
+		return archiveErr.WithAdditional(additional, runtimeSkipModule, err)
+	}
+	return archiveErr.WithAdditional(additional, runtimeSkipExternalCall, err)
 }
 
+// NewError retrieves an error from the factory. If the error is known
+// its additional context appended and returned to the caller. If the
+// error is unknown it is returned with additional context appended and
+// ID unknown.
+func (f *Factory) NewError(id ID, additional string, err error) *Error {
+	return f.newError(id, additional, err, false)
+}
+
+// LogError provides an simple interface for external callers to return
+// an error from the factory.
 func (f *Factory) LogError(id ID, additional string, err error) (string, *Error) {
-	return f.logName, f.NewError(id, additional, err)
+	return f.logName, f.newError(id, additional, err, true)
 }
 
 // TOML will return a byte array to the caller containing all
