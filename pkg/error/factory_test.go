@@ -1,10 +1,11 @@
 package error
 
 import (
+	"bytes"
 	"fmt"
-	"os"
 	"reflect"
 	"runtime"
+	"strings"
 	"testing"
 
 	"emperror.dev/errors"
@@ -26,12 +27,30 @@ func compareSlices(slice1 []*Error, slice2 []*Error) bool {
 
 func TestLogging(t *testing.T) {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+	var buf bytes.Buffer
+	log.Logger = log.Output(zerolog.ConsoleWriter{
+		Out:     &buf,
+		NoColor: true,
+	})
 	factory := NewFactory("OCFLError")
 	if err := factory.RegisterError("Test", TypeUnknownError, 50, "Testing for error"); err != nil {
 		t.Errorf("factory.RegisterError() failed: %v", err)
 	}
+
+	// Output an example log line.
 	log.Info().Any(factory.LogError("Test", "additional", errors.New("Testing 123"))).Msg("hello world")
+
+	// Rudimentary constants from log line. We could try and be more dynamic here
+	// but it would require mocking time, and understanding different path behavior.
+	const testStr1 = "INF hello world OCFLError={\"additional\":\"additional\",\"error_data\":{\"message\":\"Testing 123\",\"stack\""
+	const testStr2 = "\"id\":\"Test\",\"message\":\"Testing for error\",\"source_file\""
+	const testStr3 = "\"source_func\":\"github.com/ocfl-archive/error/pkg/error.TestLogging\",\"type\":\"unknown\",\"weight\":50}"
+
+	if !strings.Contains(buf.String(), testStr1) &&
+		!strings.Contains(buf.String(), testStr1) &&
+		!strings.Contains(buf.String(), testStr1) {
+		t.Errorf("log not output as expected: '%s'", buf.String())
+	}
 }
 
 // TestFactoryInitAndRoundTrip ensures that data consistency is protected
