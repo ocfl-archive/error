@@ -80,13 +80,15 @@ func TestFactoryInitAndRoundTrip(t *testing.T) {
 	err := errors.New("Test")
 	err = errors.Wrap(err, "additional")
 
-	_, testErr := factory.LogError("Test", "additional", err)
+	logName, testErr := factory.LogError("Test", "additional", err)
 	pc, file, line, ok := runtime.Caller(0)
 	details := runtime.FuncForPC(pc)
 	if !ok {
 		t.Errorf("runtime.Caller(0) failed")
 	}
-
+	if logName != "OCFLError" {
+		t.Errorf("log name is incorrect: '%s' expected: 'OCFLError'", logName)
+	}
 	sourceFile := fmt.Sprintf("%s:%d", file, line-1)
 	if testErr.ID != "Test" {
 		t.Errorf("testErr.ID = %s, want Test", testErr.ID)
