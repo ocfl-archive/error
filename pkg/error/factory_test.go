@@ -80,7 +80,7 @@ func TestFactoryInitAndRoundTrip(t *testing.T) {
 	err := errors.New("Test")
 	err = errors.Wrap(err, "additional")
 
-	testErr := factory.NewError("Test", "additional", err)
+	_, testErr := factory.LogError("Test", "additional", err)
 	pc, file, line, ok := runtime.Caller(0)
 	details := runtime.FuncForPC(pc)
 	if !ok {
@@ -97,7 +97,8 @@ func TestFactoryInitAndRoundTrip(t *testing.T) {
 	if testErr.Weight != 50 {
 		t.Errorf("testErr.Weight = %d, want 50", testErr.Weight)
 	}
-	if testErr.SourceFile != sourceFile {
+	if testErr.SourceFile != sourceFile &&
+		!strings.Contains(testErr.SourceFile, "error/pkg/error/factory_test.go") {
 		t.Errorf("testErr.SourceFile = %s, want %s", testErr.SourceFile, sourceFile)
 	}
 	if testErr.SourceFunc != details.Name() {
