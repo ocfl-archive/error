@@ -4,6 +4,10 @@
 
 package error
 
+import (
+	"emperror.dev/errors"
+)
+
 // DefaultWeight provides a default for weighting errors.
 const DefaultWeight = 100
 
@@ -30,4 +34,12 @@ func NewError(id ID, additional string, err error) *Error {
 		additional = string(id) + ": " + additional
 	}
 	return archiveErr.WithAdditional(additional, runtimeSkipModule, err)
+}
+
+func GetError(err error) *Error {
+	var e = Error{}
+	if errors.As(err, &e) {
+		return &e
+	}
+	return nil
 }

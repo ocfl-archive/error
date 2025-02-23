@@ -119,3 +119,7 @@ func (f *Factory) YAML() ([]byte, error) {
 	}
 	return yaml.Marshal(errs)
 }
+
+func (f *Factory) GetLogName() string {
+	return f.logName
+}
