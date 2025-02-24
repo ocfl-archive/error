@@ -43,3 +43,5 @@ func GetError(err error) *Error {
 	}
 	return nil
 }
+
+var _ error = &Error{}

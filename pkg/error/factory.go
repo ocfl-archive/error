@@ -1,7 +1,9 @@
 package error
 
 import (
+	"emperror.dev/errors"
 	"fmt"
+	"github.com/rs/zerolog"
 
 	"github.com/BurntSushi/toml"
 	"gopkg.in/yaml.v3"
@@ -92,6 +94,14 @@ func (f *Factory) NewError(id ID, additional string, err error) *Error {
 // an error from the factory.
 func (f *Factory) LogError(id ID, additional string, err error) (string, *Error) {
 	return f.logName, f.newError(id, additional, err, true)
+}
+
+func (f *Factory) LogSetError(event *zerolog.Event, err error) *zerolog.Event {
+	var e = &Error{}
+	if errors.As(err, &e) {
+		return event.Any(f.logName, e)
+	}
+	return event.Err(err)
 }
 
 // TOML will return a byte array to the caller containing all

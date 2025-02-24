@@ -53,6 +53,32 @@ func TestLogging(t *testing.T) {
 	}
 }
 
+func TestFactoryLogging(t *testing.T) {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	var buf bytes.Buffer
+	log.Logger = log.Output(zerolog.ConsoleWriter{
+		Out:     &buf,
+		NoColor: true,
+	})
+	factory := NewFactory("OCFLError")
+	if err := factory.RegisterError("Test", TypeUnknownError, 50, "Testing for error"); err != nil {
+		t.Errorf("factory.RegisterError() failed: %v", err)
+	}
+	if err := factory.RegisterError(IDUnknownError, TypeUnknownError, 50, "Testing for error"); err == nil {
+		t.Errorf("factory.RegisterError() should have failed")
+	}
+	err := errors.New("Test")
+	err = errors.Wrap(err, "additional")
+
+	factory.LogSetError(log.Error(), err).Msg("hello world")
+
+	_, testErr := factory.LogError("Test", "additional", err)
+	factory.LogSetError(log.Error(), testErr).Msg("hello world")
+
+	testErr2 := factory.NewError("Test", "additional", err)
+	factory.LogSetError(log.Error(), testErr2).Msg("hello world")
+}
+
 // TestFactoryInitAndRoundTrip ensures that data consistency is protected
 // through different cycles of initializing the factory and roundtrip
 // via export.
