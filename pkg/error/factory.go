@@ -93,6 +93,8 @@ func (f *Factory) LogError(id ID, additional string, err error) (string, *Error)
 	return f.logName, f.newError(id, additional, err)
 }
 
+// LogSetError ensures wrapped error data is added to a zerolog
+// error's context where it is available.
 func (f *Factory) LogSetError(event *zerolog.Event, err error) *zerolog.Event {
 	var e = &Error{}
 	if errors.As(err, &e) {
