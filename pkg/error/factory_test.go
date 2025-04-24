@@ -47,8 +47,8 @@ func TestLogging(t *testing.T) {
 	const testStr3 = "\"source_func\":\"github.com/ocfl-archive/error/pkg/error.TestLogging\",\"type\":\"unknown\",\"weight\":50}"
 
 	if !strings.Contains(buf.String(), testStr1) &&
-		!strings.Contains(buf.String(), testStr1) &&
-		!strings.Contains(buf.String(), testStr1) {
+		!strings.Contains(buf.String(), testStr2) &&
+		!strings.Contains(buf.String(), testStr3) {
 		t.Errorf("log not output as expected: '%s'", buf.String())
 	}
 }
@@ -85,9 +85,6 @@ func TestFactoryLogging(t *testing.T) {
 func TestFactoryInitAndRoundTrip(t *testing.T) {
 
 	factory := NewFactory("OCFLError")
-	if factory == nil {
-		t.Errorf("factory is nil")
-	}
 	if factory.errors == nil {
 		t.Errorf("factory.errors is nil")
 	}

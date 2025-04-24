@@ -11,7 +11,6 @@ import (
 // Stack frame constants determine how many stack frames to skip when
 // accessing information about the current runtime.
 const runtimeSkipInvalid = 0
-const runtimeSkipDefault = 1
 const runtimeSkipModule = 2
 const runtimeSkipExternalCall = 3
 
