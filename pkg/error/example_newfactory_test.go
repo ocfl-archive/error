@@ -35,7 +35,7 @@ message = "cannot determine content type for archival object"
 		panic(err)
 	}
 
-	factoryErr := errorFactory.NewError("xGOCFL::1", "(add)ing to GOCFL archive", fmt.Errorf("disk is readonly"))
+	factoryErr := errorFactory.NewError("GOCFL::1", "(add)ing to GOCFL archive", fmt.Errorf("disk is readonly"))
 	if factoryErr.ID == "IDUnknownError" {
 		// error could not be retrieved from the factory.
 		// we can handle it differently here, or fall through
