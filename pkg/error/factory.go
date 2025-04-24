@@ -1,8 +1,9 @@
 package error
 
 import (
-	"emperror.dev/errors"
 	"fmt"
+
+	"emperror.dev/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/BurntSushi/toml"
