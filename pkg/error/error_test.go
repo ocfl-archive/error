@@ -20,9 +20,6 @@ func TestError(t *testing.T) {
 	sourceFile := fmt.Sprintf("%s:%d", file, line-1)
 
 	sourceFunc := details.Name()
-	if testError == nil {
-		t.Errorf("error is nil")
-	}
 	if testError.ID != IDUnknownError {
 		t.Errorf("error.ID = %s, want %s", testError.ID, IDUnknownError)
 	}
